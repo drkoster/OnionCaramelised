@@ -4,6 +4,12 @@
 
 *An enhanced operating system for your Miyoo Mini and Mini+, featuring fine-tuned emulation with 100+ built-in emulators, auto-save and resume, a wealth of customization options, and much more. Performant, reliable, and straightforward retro gaming right in your pocket.*
 
+This fork adds a few tweaks and changes based on personal preference dubbed "Caramelised".
+Changes in this fork:
+- Retroarch updated to 1.21
+- Tweaked battery readout:
+    - Lowered interval for readout (30s vs 15s)
+
 <p>&nbsp;</p>
 
 <p align="center">
