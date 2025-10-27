@@ -6,7 +6,6 @@
 
 This fork adds a few tweaks and changes based on personal preference dubbed "Caramelised".
 Changes in this fork:
-- Retroarch updated to 1.21
 - Tweaked battery readout:
     - Lowered interval for readout (30s vs 15s)
 
