@@ -7,7 +7,9 @@
 This fork adds a few tweaks and changes based on personal preference dubbed "Caramelised".
 Changes in this fork:
 - Tweaked battery readout:
-    - Lowered interval for readout (30s vs 15s)
+    - Increased delay for readout (30s vs 15s).
+    - Increased lowest charge level voltage from 3.0V to 3.4V to prevent wear. 
+    - Added trimmed mean to battery readout
 
 <p>&nbsp;</p>
 
