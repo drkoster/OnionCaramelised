@@ -365,7 +365,7 @@ int updateADCValue(int value)
         historyCount++;
     }
 
-    // Calculate the average of the history
+    // Calculate the average of the history and remove highest and lowest outlier
     int sum = 0;
     int max = 0;
     int min = history[0];

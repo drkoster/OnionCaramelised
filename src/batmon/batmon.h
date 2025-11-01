@@ -28,7 +28,7 @@
 
 #include "batmonDB.h"
 
-#define CHECK_BATTERY_TIMEOUT_S 30 // s - check battery percentage every 15s
+#define CHECK_BATTERY_TIMEOUT_S 30 // s - check battery percentage every 30s
 
 // Battery logs
 #define FILO_MIN_SIZE 1000
