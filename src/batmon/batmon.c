@@ -339,7 +339,7 @@ void saveFakeAxpResult(int current_percentage)
     }
 }
 
-#define HISTORY_SIZE 5 // Number of values to smooth battery percentage
+#define HISTORY_SIZE 7 // Number of values to smooth battery percentage
 
 int updateADCValue(int value)
 {
@@ -367,10 +367,27 @@ int updateADCValue(int value)
 
     // Calculate the average of the history
     int sum = 0;
+    int max = 0;
+    int min = history[0];
     for (int i = 0; i < historyCount; i++) {
+        if (history[i] > max){
+            max = history[i];
+        }
+        if (history[i] < min){
+            min = history[i];
+        }
         sum += history[i];
     }
-    int smoothedValue = sum / historyCount;
+
+    // Remove highest and lowest values if enough values exist
+    int smoothedValue = 0;
+    if (historyCount >= 3){
+        sum -= max;
+        sum -= min;
+        smoothedValue = sum / (historyCount -2);
+    } else {
+        smoothedValue = sum / historyCount;
+    }
 
     return smoothedValue;
 }
@@ -396,26 +413,26 @@ typedef struct {
 
 VoltagePercentMapping VoltageCurveMapping_liion[] = {
     {4.20, 100.0}, // super accurate fresh miyoom mini battery curve mapping data.
-    {4.13, 95.0},
-    {4.06, 90.0},
-    {4.02, 85.0},
-    {3.99, 80.0},
-    {3.95, 75.0},
-    {3.92, 70.0},
-    {3.88, 65.0},
-    {3.85, 60.0},
+    {4.11, 95.0},
+    {4.07, 90.0},
+    {4.04, 85.0},
+    {4.00, 80.0},
+    {3.97, 75.0},
+    {3.93, 70.0},
+    {3.90, 65.0},
+    {3.86, 60.0},
     {3.81, 55.0},
-    {3.78, 50.0},
-    {3.74, 45.0},
-    {3.71, 40.0},
-    {3.67, 35.0},
-    {3.64, 30.0},
-    {3.56, 25.0},
-    {3.49, 20.0},
-    {3.42, 15.0},
-    {3.30, 10.0},
-    {3.14, 5.0},
-    {3.00, 0.0}};
+    {3.76, 50.0},
+    {3.71, 45.0},
+    {3.67, 40.0},
+    {3.64, 35.0},
+    {3.62, 30.0},
+    {3.60, 25.0},
+    {3.58, 20.0},
+    {3.56, 15.0},
+    {3.51, 10.0},
+    {3.46, 5.0},
+    {3.40, 0.0}};
 
 float adcToVoltage(int adcValue)
 {
