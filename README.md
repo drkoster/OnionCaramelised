@@ -11,6 +11,12 @@ Changes in this fork:
     - Increased lowest charge level voltage from 3.0V to 3.4V to prevent wear. 
     - Added trimmed mean to battery readout
 - The files directory contains the Miyoo firmware 202408061133 (latest known to me)
+- Changed the hotkey CPUClock behaviour
+    - Minimum clock is now 400Mhz (instead of 500)
+    - Maximum clock MM+ = 1900 (instead of 1800)
+    - Maximum clock MMini = 1700 (instead of 1600)
+    - Step size set to 50Mhz (Instead of 100)
+*Enable the hotkey under Tweaks(app)->Advanced->OC Hotkeys
 
 
 ## How to install the Miyoo firmware update

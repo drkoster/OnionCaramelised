@@ -365,14 +365,14 @@ void cpuClockHotkey(int adjust)
         return;
     }
     printf_debug("cpuClockHotkey: %d\n", adjust);
-    int min_cpu_clock = 500; // ?
+    int min_cpu_clock = 400; // ?
     int max_cpu_clock;
     switch (DEVICE_ID) {
     case MIYOO354:
-        max_cpu_clock = 1800;
+        max_cpu_clock = 1900;
         break;
     case MIYOO283:
-        max_cpu_clock = 1600;
+        max_cpu_clock = 1700;
         break;
     default:
         // Unknown device
@@ -590,12 +590,12 @@ int main(void)
                 break;
             case HW_BTN_R1:
                 if (val == PRESSED && (button_flag & (SELECT | START)) == (SELECT | START)) {
-                    cpuClockHotkey(100);
+                    cpuClockHotkey(50);
                 }
                 break;
             case HW_BTN_L1:
                 if (val == PRESSED && (button_flag & (SELECT | START)) == (SELECT | START)) {
-                    cpuClockHotkey(-100);
+                    cpuClockHotkey(-50);
                 }
                 break;
             case HW_BTN_L2:
