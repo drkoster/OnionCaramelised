@@ -14,7 +14,7 @@ Changes in this fork:
 
 
 ## How to install the Miyoo firmware update
-1. Place this file in the root directory of the SDCard. The SDCard must be FAT32 formatted.
+1. Place the file 'files/MiyooFirmware/miyoo283_fw.img' in the root directory of the SDCard. The SDCard must be FAT32 formatted.
 2. Poweroff your Miyoo
 3. Connect a charging cable
 4. Press the power button to power on. A rocket icon will show on screen. 
