@@ -10,6 +10,16 @@ Changes in this fork:
     - Increased delay for readout (30s vs 15s).
     - Increased lowest charge level voltage from 3.0V to 3.4V to prevent wear. 
     - Added trimmed mean to battery readout
+- The files directory contains the Miyoo firmware 202408061133 (latest known to me)
+
+
+## How to install the Miyoo firmware update
+1. Place the file 'files/MiyooFirmware/miyoo283_fw.img' in the root directory of the SDCard. The SDCard must be FAT32 formatted.
+2. Poweroff your Miyoo
+3. Connect a charging cable
+4. Press the power button to power on. A rocket icon will show on screen. 
+5. Wait for 2 ~3 minutes 
+6. Done!
 
 <p>&nbsp;</p>
 
