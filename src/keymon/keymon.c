@@ -374,6 +374,8 @@ void cpuClockHotkey(int adjust)
     case MIYOO283:
         max_cpu_clock = 1700;
         break;
+    case MIYOO285:
+        max_cpu_clock = 1700;
     default:
         // Unknown device
         return;

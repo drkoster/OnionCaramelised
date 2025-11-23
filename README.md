@@ -4,6 +4,7 @@
 
 *An enhanced operating system for your Miyoo Mini and Mini+, featuring fine-tuned emulation with 100+ built-in emulators, auto-save and resume, a wealth of customization options, and much more. Performant, reliable, and straightforward retro gaming right in your pocket.*
 
+[CHANGELOG]
 This fork adds a few tweaks and changes based on personal preference dubbed "Caramelised".
 Changes in this fork:
 - Tweaked battery readout:
@@ -17,6 +18,8 @@ Changes in this fork:
     - Maximum clock MMini = 1700 (instead of 1600)
     - Step size set to 50Mhz (Instead of 100)
 *Enable the hotkey under Tweaks(app)->Advanced->OC Hotkeys
+- Miyoo Mini flip support (MY285)
+    - Hotkey overclock support (Max 1700mHz)
 
 
 ## How to install the Miyoo firmware update
