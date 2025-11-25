@@ -20,7 +20,7 @@ bool _confirmReset(const char *title_str, const char *message_str)
 
     keys_enabled = false;
 
-    background_cache = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0);
+    background_cache = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0); // TODO is this correct for MMP and MMF?
     SDL_BlitSurface(screen, NULL, background_cache, NULL);
 
     theme_renderDialog(screen, title_str, message_str, true);
@@ -108,7 +108,7 @@ void action_resetMainUI(void *pt)
     sprintf(cmd_str, "cp /mnt/SDCARD/.tmp_update/res/miyoo%d_system.json /mnt/SDCARD/system.json", DEVICE_ID);
     system(cmd_str);
 
-    if (DEVICE_ID == MIYOO354) {
+    if (DEVICE_ID == MIYOO354 || DEVICE_ID == MIYOO285) {
         system("rm -f /appconfigs/wpa_supplicant.conf");
         system("cp /mnt/SDCARD/.tmp_update/res/wpa_supplicant.reset /appconfigs/wpa_supplicant.conf");
     }

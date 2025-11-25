@@ -137,12 +137,24 @@ cleanup() {
     rm -f /mnt/SDCARD/miyoo354/app/MainUI
     rmdir /mnt/SDCARD/miyoo354/app
     rmdir /mnt/SDCARD/miyoo354
+
+    rm -f /mnt/SDCARD/miyoo285/app/MainUI
+    rmdir /mnt/SDCARD/miyoo285/app
+    rmdir /mnt/SDCARD/miyoo285
 }
 
 DEVICE_ID=0
 
+// Supports Miyoo mini, plus and flip
 check_device_model() {
     DEVICE_ID=$([ -f /customer/app/axp_test ] && echo $MODEL_MMP || echo $MODEL_MM)
+    if [ -e /sys/devices/soc0/soc/soc:hall-mh248/hallvalue ] || [ -e /dev/input/event1 ]; then
+        DEVICE_ID=$MODEL_MMF
+    elif [ -f /customer/app/axp_test ]; then
+        DEVICE_ID=$MODEL_MMP
+    else
+        DEVICE_ID=$MODEL_MM
+    fi
     echo -n "$DEVICE_ID" > /tmp/deviceModel
 }
 

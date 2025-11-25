@@ -38,6 +38,7 @@ typedef struct settings_s {
     char theme[JSON_STRING_LEN];
     int fontsize;
     int audiofix;
+    int lid_close_action;
     bool show_recents;
     bool show_expert;
     bool startup_auto_resume;
@@ -105,6 +106,7 @@ static settings_s __default_settings = (settings_s){
     .startup_tab = 0,
     .startup_application = 0,
     .rtc_available = false,
+    .lid_close_action = 1,
     // Menu button actions
     .mainui_single_press = 1,
     .mainui_long_press = 0,
@@ -220,6 +222,7 @@ void settings_load(void)
     if (config_flag_get(".noVibration")) // flag is deprecated, but keep compatibility
         settings.vibration = 0;
 
+    config_get("flip/lidCloseAction", CONFIG_INT, &settings.lid_close_action);
     config_get("battery/warnAt", CONFIG_INT, &settings.low_battery_warn_at);
     config_get("battery/exitAt", CONFIG_INT, &settings.low_battery_autosave_at);
     config_get("startup/app", CONFIG_INT, &settings.startup_application);
@@ -339,6 +342,7 @@ void _settings_save_mainui(void)
 
 void settings_save(void)
 {
+    config_setNumber("flip/lidCloseAction", settings.lid_close_action);
     config_flag_set(".noAutoStart", !settings.startup_auto_resume);
     config_flag_set(".noMenuHaptics", !settings.menu_button_haptics);
     config_flag_set(".bgmMute", settings.bgm_mute);

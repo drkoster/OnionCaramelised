@@ -51,6 +51,8 @@
 #define REPEAT_SEC(val) ((val * 1000 - 250) / 50)
 #define PIDMAX 32
 
+#define HALL_SENSOR_DEBOUNCE_SLEEP 100 // Hall sensor debounce wait sleep time in milliseconds
+
 uint32_t suspendpid[PIDMAX];
 
 const int KONAMI_CODE[] = {HW_BTN_UP, HW_BTN_UP, HW_BTN_DOWN, HW_BTN_DOWN,
@@ -67,6 +69,29 @@ void takeScreenshot(void)
     screenshot_recent();
     settings_setBrightness(settings.brightness, true, false);
 }
+
+// Read hall sensor of lid for MY285
+// 1 = Open
+// 0 = Closed
+// -1 = Error
+int getHallStatus(void){
+    if (DEVICE_ID != MIYOO285) {
+        return -1;
+    }
+    FILE *fp = fopen("/sys/devices/soc0/soc/soc:hall-mh248/hallvalue", "r");
+    int status = -1;
+    if(fp){
+        if ( fscanf(fp, "%d", &status) != 1 ){
+            status = 0;
+        }
+        fclose(fp);
+    } else {
+        return -1;
+    }
+    
+    return status;
+}
+
 
 //
 //    Suspend / Kill processes
@@ -273,6 +298,7 @@ void suspend_exec(int timeout)
     }
     rumble(0);
     display_setBrightnessRaw(0);
+
     display_off();
     system_powersave_on();
 
@@ -287,6 +313,18 @@ void suspend_exec(int timeout)
             if ((ev.type != EV_KEY) || (ev.value > REPEAT))
                 continue;
             if (ev.code == HW_BTN_POWER) {
+                if (DEVICE_ID == MIYOO285 && getHallStatus() == 0) {
+                    if (ev.value == REPEAT) {
+                        if (++repeat_power >= REPEAT_SEC(5)) {
+                            short_pulse();
+                            killexit = 1;
+                            break;
+                        }
+                    }
+                    /* ignore PRESSED and RELEASED when lid closed */
+                    continue;
+                }
+
                 if (ev.value == RELEASED)
                     break;
                 else if (ev.value == PRESSED)
@@ -308,8 +346,8 @@ void suspend_exec(int timeout)
                     break;
                 }
             }
-        }
-        else if (!ready && !battery_isCharging()) {
+            
+        } else if (!ready && !battery_isCharging()) {
             // shutdown
             system_powersave_off();
             resume();
@@ -335,6 +373,7 @@ void suspend_exec(int timeout)
         // resume playActivity
         system("playActivity resume");
     }
+    
 
     keyinput_enable();
 }
@@ -375,7 +414,7 @@ void cpuClockHotkey(int adjust)
         max_cpu_clock = 1700;
         break;
     case MIYOO285:
-        max_cpu_clock = 1700;
+        max_cpu_clock = 1700; /* Experimental, might increase/decrease? */
     default:
         // Unknown device
         return;
@@ -437,6 +476,11 @@ int main(void)
         axp_write(0x36, axp_read(0x36) | 3);
     }
 
+    if (DEVICE_ID == MIYOO285) {
+        // set hardware poweroff time to 10s
+        axp_write(0x36, axp_read(0x36) | 3);
+    }
+
     settings_init();
 
     // Set Initial Volume / Brightness
@@ -478,6 +522,16 @@ int main(void)
     int hibernate_start = ticks;
     int hibernate_time;
     int elapsed_sec = 0;
+
+    int previous_hall_value = 1;
+    int current_hall_value = 1;
+
+    if (DEVICE_ID == MIYOO285) {
+        current_hall_value = previous_hall_value = getHallStatus();
+        if (previous_hall_value == -1) {
+            previous_hall_value = current_hall_value = 1;  
+        }
+    }
 
     bool delete_flag = false;
     bool settings_changed = false;
@@ -620,7 +674,8 @@ int main(void)
                             setVolumeRaw(0, -3);
                         break;
                     case SELECT:
-                        if (DEVICE_ID == MIYOO354)
+                        // Both 354 and 285 have the required volume buttons so we can disable
+                        if (DEVICE_ID == MIYOO354 || DEVICE_ID == MIYOO285)
                             break; // disable this shortcut for MMP
                         // SELECT + L2 : brightness down
                         if (config_flag_get(".altBrightness"))
@@ -658,7 +713,8 @@ int main(void)
                             setVolumeRaw(0, +3);
                         break;
                     case SELECT:
-                        if (DEVICE_ID == MIYOO354)
+                        // Both 354 and 285 have hw buttons so shortcut not needed
+                        if (DEVICE_ID == MIYOO354 || DEVICE_ID == MIYOO285)
                             break; // disable this shortcut for MMP
                         // SELECT + R2 : brightness up
                         if (config_flag_get(".altBrightness"))
@@ -898,6 +954,45 @@ int main(void)
         }
         else {
             delete_flag = true;
+        }
+
+
+        if (DEVICE_ID == MIYOO285) {
+
+                current_hall_value = getHallStatus();
+                
+                if (current_hall_value != -1 && previous_hall_value != -1 && 
+                    current_hall_value != previous_hall_value) {
+                    
+                    if (current_hall_value == 0) {
+                        
+                        // Debounce delay.
+                        msleep(HALL_SENSOR_DEBOUNCE_SLEEP);
+ 
+                        // Ignore state change IF not stable and ignore
+                        if (getHallStatus() == current_hall_value){
+                            switch (settings.lid_close_action) {
+                                case 0:
+                                    if (settings.disable_standby) {
+                                        deepsleep();
+                                    }
+                                    else {
+                                        turnOffScreen();
+                                    }
+                                    break;
+                                case 1:
+                                    sync();
+                                    deepsleep();
+                                    break;
+                                    default: 
+                                        // No action
+                                    break;
+                            }
+                        }                        
+                    }
+                }
+                
+                previous_hall_value = current_hall_value;
         }
 
         // Update ticks

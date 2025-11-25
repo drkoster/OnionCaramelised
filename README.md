@@ -20,6 +20,8 @@ Changes in this fork:
 *Enable the hotkey under Tweaks(app)->Advanced->OC Hotkeys
 - Miyoo Mini flip support (MY285)
     - Hotkey overclock support (Max 1700mHz)
+*Support for Miyoo Mini flip based on latest 4.4beta
+
 
 
 ## How to install the Miyoo firmware update

@@ -52,6 +52,12 @@ void action_setAppShortcut(void *pt)
     }
 }
 
+
+void action_setLidCloseAction(void *pt)
+{
+    settings.lid_close_action = ((ListItem *)pt)->value;
+}
+
 void action_meterWidth(void *pt)
 {
     config_setNumber("display/meterWidth", ((ListItem *)pt)->value);

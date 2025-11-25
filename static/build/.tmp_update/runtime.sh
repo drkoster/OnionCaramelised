@@ -9,12 +9,18 @@ logfile=$(basename "$0" .sh)
 
 MODEL_MM=283
 MODEL_MMP=354
+MODEL_MMF=285
 screen_resolution="640x480"
 
 main() {
     # Set model ID
     axp 0 > /dev/null
-    export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
+    if [ -e /sys/devices/soc0/soc/soc:hall-mh248/hallvalue ] || [ -e /dev/input/event1 ]; then
+        export DEVICE_ID=$MODEL_MMF
+        change_resolution
+    else
+        export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
+    fi
     echo -n "$DEVICE_ID" > /tmp/deviceModel
 
     SERIAL_NUMBER=$(read_uuid)
@@ -45,7 +51,7 @@ main() {
     # Check is charging
     if [ $DEVICE_ID -eq $MODEL_MM ]; then
         is_charging=$(cat /sys/devices/gpiochip0/gpio/gpio59/value)
-    elif [ $DEVICE_ID -eq $MODEL_MMP ]; then
+    elif [ $DEVICE_ID -eq $MODEL_MMP ] || [ $DEVICE_ID -eq $MODEL_MMF ]; then
         axp_status="0x$(axp 0 | cut -d':' -f2)"
         is_charging=$([ $(($axp_status & 0x4)) -eq 4 ] && echo 1 || echo 0)
     fi
